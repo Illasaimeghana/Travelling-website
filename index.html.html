@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust - Your Travel Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section with Image Slider */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4));
+        }
+
+        /* Slider Navigation */
+        .slider-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .slider-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+        }
+
+        .slider-arrow {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            backdrop-filter: blur(10px);
+        }
+
+        .slider-arrow:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .prev-arrow {
+            left: 30px;
+        }
+
+        .next-arrow {
+            right: 30px;
+        }
+
+        .hero-content {
+            z-index: 2;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Quick Links */
+        .quick-links {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem 0;
+            margin-top: -100px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quick-link-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .quick-link-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Destinations with Background Images */
+        .destinations {
+            padding: 5rem 0;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90') center/cover;
+            background-attachment: fixed;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .destination-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .destination-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            position: relative;
+        }
+
+        .destination-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+        }
+
+        .destination-image span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Individual destination backgrounds */
+        .taj-mahal {
+            background-image: url('https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .kerala-backwaters {
+            background-image: url('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .goa-beach {
+            background-image: url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .rajasthan-palace {
+            background-image: url('https://images.unsplash.com/photo-1599661046827-dacde6976549?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .himalayas {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .kochi-harbor {
+            background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=90');
+        }
+
+        .destination-content {
+            padding: 2rem;
+        }
+
+        .destination-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .destination-content p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        /* Packages */
+        .packages {
+            padding: 5rem 0;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90') center/cover;
+            background-attachment: fixed;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .package-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .package-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .package-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .package-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .package-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .package-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Login and Registration Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            margin: 3% auto;
+            padding: 3rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        /* Booking Modal */
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .booking-form .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90') center/cover;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .destinations-grid,
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">WanderLust</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="login-btn" onclick="openAuthModal()">Login</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Image Slider -->
+    <section class="hero" id="home">
+        <div class="hero-slider">
+            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90')"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90')"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90')"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90')"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1599661046827-dacde6976549?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90')"></div>
+        </div>
+        
+        <div class="slider-arrows slider-arrow prev-arrow" onclick="changeSlide(-1)">‹</div>
+        <div class="slider-arrows slider-arrow next-arrow" onclick="changeSlide(1)">›</div>
+        
+        <div class="slider-nav">
+            <div class="slider-dot active" onclick="currentSlide(1)"></div>
+            <div class="slider-dot" onclick="currentSlide(2)"></div>
+            <div class="slider-dot" onclick="currentSlide(3)"></div>
+            <div class="slider-dot" onclick="currentSlide(4)"></div>
+            <div class="slider-dot" onclick="currentSlide(5)"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1>Explore Incredible India</h1>
+            <p>Discover the beauty of India's diverse landscapes, from the majestic Himalayas to pristine beaches, ancient heritage sites to modern marvels.</p>
+            <div class="cta-buttons">
+                <a href="#destinations" class="btn btn-primary">Explore Destinations</a>
+                <a href="#packages" class="btn btn-secondary">View Packages</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about" style="padding: 5rem 0; background: rgba(255, 255, 255, 0.95);">
+        <div class="container">
+            <h2 class="section-title" style="color: #333;">About WanderLust</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; align-items: center;">
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 1rem;">Your Trusted Travel Partner Since 2010</h3>
+                    <p style="margin-bottom: 1rem; color: #666; line-height: 1.8;">
+                        WanderLust has been India's premier travel company, crafting unforgettable journeys across the incredible subcontinent. With over 15 years of experience, we specialize in showcasing India's diverse beauty - from the snow-capped Himalayas to tropical beaches, ancient heritage sites to bustling modern cities.
+                    </p>
+                    <p style="margin-bottom: 1rem; color: #666; line-height: 1.8;">
+                        Our expert team of travel consultants and local guides ensure every trip is perfectly tailored to your preferences, creating memories that last a lifetime.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <div style="font-size: 2rem; color: #667eea; font-weight: bold;">50,000+</div>
+                            <div style="color: #666;">Happy Travelers</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <div style="font-size: 2rem; color: #667eea; font-weight: bold;">500+</div>
+                            <div style="color: #666;">Destinations</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                            <div style="font-size: 2rem; color: #667eea; font-weight: bold;">15+</div>
+                            <div style="color: #666;">Years Experience</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="background: linear-gradient(45deg, #667eea, #764ba2); height: 400px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
+                        🌏
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact" style="padding: 5rem 0; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=90') center/cover; color: white;">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 2rem;">Get In Touch</h3>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">📍 Address</h4>
+                        <p>123 Travel Street, Connaught Place<br>New Delhi, India - 110001</p>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">📞 Phone</h4>
+                        <p>+91 98765 43210<br>+91 11 2334 5678</p>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">📧 Email</h4>
+                        <p>info@wanderlust.com<br>bookings@wanderlust.com</p>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem;">🕒 Business Hours</h4>
+                        <p>Monday - Saturday: 9:00 AM - 8:00 PM<br>Sunday: 10:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 2rem;">Send Us a Message</h3>
+                    <form id="contactForm" onsubmit="handleContact(event)" style="display: grid; gap: 1rem;">
+                        <input type="text" name="name" placeholder="Your Name" required style="padding: 1rem; border: none; border-radius: 10px; font-size: 1rem;">
+                        <input type="email" name="email" placeholder="Your Email" required style="padding: 1rem; border: none; border-radius: 10px; font-size: 1rem;">
+                        <input type="tel" name="phone" placeholder="Your Phone" required style="padding: 1rem; border: none; border-radius: 10px; font-size: 1rem;">
+                        <select name="subject" required style="padding: 1rem; border: none; border-radius: 10px; font-size: 1rem;">
+                            <option value="">Select Subject</option>
+                            <option value="booking">Booking Inquiry</option>
+                            <option value="package">Package Information</option>
+                            <option value="support">Customer Support</option>
+                            <option value="feedback">Feedback</option>
+                        </select>
+                        <textarea name="message" placeholder="Your Message" rows="5" required style="padding: 1rem; border: none; border-radius: 10px; font-size: 1rem; resize: vertical;"></textarea>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                    </form>
+                    <div id="contactStatus" class="status-message" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="quick-links">
+        <div class="container">
+            <h2 class="section-title" style="color: #333;">Quick Access</h2>
+            <div class="quick-links-grid">
+                <div class="quick-link-card" onclick="scrollToSection('destinations')">
+                    <div class="quick-link-icon">🏔️</div>
+                    <h3>Mountains</h3>
+                    <p>Himalayan peaks and hill stations</p>
+                </div>
+                <div class="quick-link-card" onclick="scrollToSection('destinations')">
+                    <div class="quick-link-icon">🏖️</div>
+                    <h3>Beaches</h3>
+                    <p>Coastal paradise in Goa & Kerala</p>
+                </div>
+                <div class="quick-link-card" onclick="scrollToSection('destinations')">
+                    <div class="quick-link-icon">🏛️</div>
+                    <h3>Heritage</h3>
+                    <p>Ancient monuments and palaces</p>
+                </div>
+                <div class="quick-link-card" onclick="scrollToSection('packages')">
+                    <div class="quick-link-icon">🎒</div>
+                    <h3>Adventure</h3>
+                    <p>Trekking and wildlife safaris</p>
+                </div>
+                <div class="quick-link-card" onclick="scrollToSection('packages')">
+                    <div class="quick-link-icon">🍛</div>
+                    <h3>Culinary</h3>
+                    <p>Indian cuisine experiences</p>
+                </div>
+                <div class="quick-link-card" onclick="scrollToSection('packages')">
+                    <div class="quick-link-icon">🧘</div>
+                    <h3>Wellness</h3>
+                    <p>Ayurveda and yoga retreats</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations -->
+    <section class="destinations" id="destinations">
+        <div class="container">
+            <h2 class="section-title">Popular Indian Destinations</h2>
+            <div class="destinations-grid">
+                <div class="destination-card">
+                    <div class="destination-image taj-mahal">
+                        <span>Taj Mahal</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Agra, Uttar Pradesh</h3>
+                        <p>Visit the iconic Taj Mahal, one of the Seven Wonders of the World, and explore the rich Mughal heritage of Agra.</p>
+                        <div class="price">From ₹15,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Agra Tour')">Book Now</button>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image kerala-backwaters">
+                        <span>Kerala Backwaters</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Alleppey, Kerala</h3>
+                        <p>Experience the serene backwaters of Kerala on traditional houseboats, surrounded by lush greenery and coconut palms.</p>
+                        <div class="price">From ₹12,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Kerala Backwaters')">Book Now</button>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image kochi-harbor">
+                        <span>Kochi Harbor</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Kochi, Kerala</h3>
+                        <p>Explore the historic port city of Kochi with its Chinese fishing nets, spice markets, and colonial architecture.</p>
+                        <div class="price">From ₹8,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Kochi Heritage')">Book Now</button>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image goa-beach">
+                        <span>Goa Beaches</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Goa</h3>
+                        <p>Relax on pristine beaches, enjoy water sports, and experience the vibrant nightlife of India's beach capital.</p>
+                        <div class="price">From ₹11,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Goa Beach Holiday')">Book Now</button>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image rajasthan-palace">
+                        <span>Rajasthan Palaces</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Jaipur, Rajasthan</h3>
+                        <p>Discover the Pink City with its magnificent palaces, forts, and vibrant bazaars showcasing royal heritage.</p>
+                        <div class="price">From ₹13,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Rajasthan Royal Tour')">Book Now</button>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image himalayas">
+                        <span>Himalayas</span>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Manali, Himachal Pradesh</h3>
+                        <p>Experience the majestic Himalayas with snow-capped peaks, adventure sports, and scenic mountain valleys.</p>
+                        <div class="price">From ₹16,999</div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Himalayan Adventure')">Book Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages -->
+    <section class="packages" id="packages">
+        <div class="container">
+            <h2 class="section-title">Travel Packages</h2>
+            <div class="packages-grid">
+                <div class="package-card">
+                    <h3 class="package-title">Golden Triangle</h3>
+                    <div class="price">₹25,999</div>
+                    <ul class="package-features">
+                        <li>7 Days / 6 Nights</li>
+                        <li>Delhi - Agra - Jaipur</li>
+                        <li>3-Star Hotel Stay</li>
+                        <li>Daily Breakfast & Dinner</li>
+                        <li>AC Transportation</li>
+                        <li>Professional Guide</li>
+                        <li>Monument Entry Fees</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Golden Triangle Package')">Choose Package</button>
+                </div>
+                <div class="package-card">
+                    <h3 class="package-title">Kerala Experience</h3>
+                    <div class="price">₹32,999</div>
+                    <ul class="package-features">
+                        <li>10 Days / 9 Nights</li>
+                        <li>Kochi - Munnar - Alleppey</li>
+                        <li>Houseboat & Resort Stay</li>
+                        <li>All Meals Included</li>
+                        <li>Backwater Cruise</li>
+                        <li>Spice Plantation Tour</li>
+                        <li>Ayurvedic Spa Treatment</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Kerala Experience Package')">Choose Package</button>
+                </div>
+                <div class="package-card">
+                    <h3 class="package-title">Rajasthan Royal</h3>
+                    <div class="price">₹45,999</div>
+                    <ul class="package-features">
+                        <li>12 Days / 11 Nights</li>
+                        <li>Jaipur - Udaipur - Jodhpur</li>
+                        <li>Heritage Hotels</li>
+                        <li>Royal Dining Experience</li>
+                        <li>Palace & Fort Tours</li>
+                        <li>Cultural Performances</li>
+                        <li>Desert Safari in Jaisalmer</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="openBookingModal('Rajasthan Royal Package')">Choose Package</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            
+            <div class="form-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="form-container active">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Welcome Back</h2>
+                <div id="loginStatus" class="status-message"></div>
+                <form action="login.php" method="POST" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">Login</button>
+                    <p style="text-align: center; color: #666;">
+                        Don't have an account? <a href="#" onclick="switchTab('register')" style="color: #667eea;">Sign up here</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="registerForm" class="form-container">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Join WanderLust</h2>
+                <div id="registerStatus" class="status-message"></div>
+                <form action="register.php" method="POST" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="full_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email Address</label>
+                        <input type="email" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">Register</button>
+                    <p style="text-align: center; color: #666;">
+                        Already have an account? <a href="#" onclick="switchTab('login')" style="color: #667eea;">Login here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Book Your Trip</h2>
+            <div id="bookingStatus" class="status-message"></div>
+            <form action="booking.php" method="POST" onsubmit="handleBooking(event)" class="booking-form">
+                <div class="form-group">
+                    <label for="bookingName">Full Name</label>
+                    <input type="text" id="bookingName" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookingEmail">Email</label>
+                    <input type="email" id="bookingEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookingPhone">Phone</label>
+                    <input type="tel" id="bookingPhone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookingDestination">Package/Destination</label>
+                    <input type="text" id="bookingDestination" name="destination" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="travelers">Number of Travelers</label>
+                    <select id="travelers" name="travelers" required>
+                        <option value="">Select</option>
+                        <option value="1">1 Person</option>
+                        <option value="2">2 People</option>
+                        <option value="3">3 People</option>
+                        <option value="4">4 People</option>
+                        <option value="5+">5+ People</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="travelDate">Preferred Travel Date</label>
+                    <input type="date" id="travelDate" name="travel_date" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="specialRequests">Special Requests</label>
+                    <input type="text" id="specialRequests" name="special_requests" placeholder="Any special requirements...">
+                </div>
+                <div class="form-group full-width">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Booking Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+                
